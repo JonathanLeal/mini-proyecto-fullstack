@@ -5,6 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script defer>
+        function obtenerProductos() {
+            return {
+                productos: [],
+                init: async function(){
+                    this.productos = await axios.get('http://127.0.0.1:8000/api/productos/list')
+                    .then(response => {
+                        console.log(response.data);
+                        return response.data;
+                    }).catch(error => console.log(error));
+                },
+                editarProducto(id_producto){
+                    //llenar para editar
+                },
+
+                eliminarProducto(id_productos){
+
+                },
+            }
+        }
+        //para usar las alertas de sweet alert
+        function show_alerts(mensaje, icono, foco) {
+            if (foco !== "") {
+                $('#'+foco).trigger('focus');
+            }
+            Swal.fire({
+                title:mensaje,
+                icon:icono,
+                customClass: {confirmButton: "btn btn-primary", popup: "animated xoomIn"},
+                buttonsStylling: false
+        });
+    }
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
     <title>Productos</title>
 </head>
@@ -33,7 +67,7 @@
                             </tr>
                         </thead>
                         <tbody x-data='obtenerProductos()'>
-                            <template x-for='producto in productos' :key='id_productos'>
+                            <template x-for='(producto,index) in productos.datos' :key='index'>
                                 <tr>
                                     <td x-text="producto.id_productos"></td>
                                     <td x-text="producto.nombre_pro"></td>
@@ -84,44 +118,5 @@
     <!-- FIN DEL MODAL PRODUCTOS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-    <script>
-        function obtenerProductos() {
-            return {
-                productos: [],
-                async init(){
-                    try {
-                        const response = await axios.get('http://127.0.0.1:8000/api/productos/list');
-                        this.productos = response.data;
-                    } catch (error) {
-                        console.error(error);
-                    }
-                },
-                editarProducto(id_producto){
-                    //llenar para editar
-                },
-
-                eliminarProducto(id_productos){
-
-                },
-            }
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            obtenerProductos().init();
-        });
-        //para usar las alertas de sweet alert
-        function show_alerts(mensaje, icono, foco) {
-            if (foco !== "") {
-                $('#'+foco).trigger('focus');
-            }
-            Swal.fire({
-                title:mensaje,
-                icon:icono,
-                customClass: {confirmButton: "btn btn-primary", popup: "animated xoomIn"},
-                buttonsStylling: false
-        });
-    }
-    </script>
 </body>
 </html>
