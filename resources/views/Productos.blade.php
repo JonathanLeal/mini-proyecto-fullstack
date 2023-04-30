@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
     <title>Productos</title>
 </head>
 <body>
@@ -31,7 +32,20 @@
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody x-data='obtenerProductos()'>
+                            <template x-for='producto in productos' :key='id_productos'>
+                                <tr>
+                                    <td x-text="producto.id_productos"></td>
+                                    <td x-text="producto.nombre_pro"></td>
+                                    <td x-text="producto.cantidad"></td>
+                                    <td x-text="producto.precio"></td>
+                                    <td>
+                                        <button @click="editarProducto(producto.id_productos)">Editar</button>
+                                        <button @click="eliminarProducto(producto.id_productos)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -73,29 +87,28 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script>
-        axios.get('http://127.0.0.1:8000/api/productos/list')
-        .then(function (response) {
-            let productos = response.data;
-            console.log(productos);
-            let tabla = document.getElementById('tabla-productos');
-            for (let i = 0; i < productos.length; i++) {
-                let fila = tabla.insertRow();
-                fila.insertCell().innerHTML = productos[i].id_productos;
-                fila.insertCell().innerHTML = productos[i].nombre_pro;
-                fila.insertCell().innerHTML = productos[i].cantidad;
-                fila.insertCell().innerHTML = productos[i].precio;
-                let celdaEditar = fila.insertCell();
-                let botonEditar = document.createElement('button');
-                botonEditar.innerHTML = 'Editar';
-                celdaEditar.appendChild(botonEditar);
-                let celdaEliminar = fila.insertCell();
-                let botonEliminar = document.createElement('button');
-                botonEliminar.innerHTML = 'Eliminar';
-                celdaEliminar.appendChild(botonEliminar);
+        function obtenerProductos() {
+            return {
+                productos: [],
+                async init(){
+                    try {
+                        const response = await axios.get('http://127.0.0.1:8000/api/productos/list');
+                        this.productos = response.data;
+                    } catch (error) {
+                        console.error(error);
+                    }
+                },
+                editarProducto(id_producto){
+                    //llenar para editar
+                },
+
+                eliminarProducto(id_productos){
+
+                },
             }
-        })
-        .catch(function (error) {
-            console.log(error);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            obtenerProductos().init();
         });
         //para usar las alertas de sweet alert
         function show_alerts(mensaje, icono, foco) {
