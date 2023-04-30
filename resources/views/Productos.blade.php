@@ -31,7 +31,7 @@
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
-                        <tbody id="table-body"></tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -73,36 +73,30 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script>
-        fetchData();
-        function fetchData() {
         axios.get('http://127.0.0.1:8000/api/productos/list')
-            .then(response => {
-            const products = response.data;
-            console.log(products);
-            displayData(products);
-            })
-            .catch(error => {
+        .then(function (response) {
+            let productos = response.data;
+            console.log(productos);
+            let tabla = document.getElementById('tabla-productos');
+            for (let i = 0; i < productos.length; i++) {
+                let fila = tabla.insertRow();
+                fila.insertCell().innerHTML = productos[i].id_productos;
+                fila.insertCell().innerHTML = productos[i].nombre_pro;
+                fila.insertCell().innerHTML = productos[i].cantidad;
+                fila.insertCell().innerHTML = productos[i].precio;
+                let celdaEditar = fila.insertCell();
+                let botonEditar = document.createElement('button');
+                botonEditar.innerHTML = 'Editar';
+                celdaEditar.appendChild(botonEditar);
+                let celdaEliminar = fila.insertCell();
+                let botonEliminar = document.createElement('button');
+                botonEliminar.innerHTML = 'Eliminar';
+                celdaEliminar.appendChild(botonEliminar);
+            }
+        })
+        .catch(function (error) {
             console.log(error);
-            });
-        }
-
-        function displayData(products) {
-        const tableBody = document.querySelector('#table-body');
-        tableBody.innerHTML = '';
-
-        for (let i = 0; i < products.length; i++) {
-        const product = products[i];
-        const row = `
-            <tr>
-            <td>${product.id_productos}</td>
-            <td>${product.nombre_pro}</td>
-            <td>${product.cantidad}</td>
-            <td>${product.precio}</td>
-            </tr>
-        `;
-        tableBody.insertAdjacentHTML('beforeend', row);
-        }
-        }
+        });
         //para usar las alertas de sweet alert
         function show_alerts(mensaje, icono, foco) {
             if (foco !== "") {

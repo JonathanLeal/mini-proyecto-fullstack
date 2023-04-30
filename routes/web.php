@@ -18,3 +18,5 @@ Route::get('/productos', function () {
     return view('Productos');
 });
 Route::get('api/productos/list', [ProductoController::class, 'mostrarProductos']);
+Route::get('api/productos/list/{id_productos}', [ProductoController::class, 'mostrarPorId']);
+Route::post('api/productos/save', [ProductoController::class, 'agregarProducto']);
