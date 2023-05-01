@@ -7,6 +7,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script defer>
+        //guardar producto
+        function guardarProducto() {
+            const nombre_pro = this.nombre_pro;
+            const cantidad = this.cantidad;
+            const precio = this.precio;
+
+            axios.post('http://127.0.0.1:8000/api/productos/save', {
+                nombre_pro,
+                cantidad,
+                precio
+            })
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.log(error.response.data);
+            });
+        }
+
         function obtenerProductos() {
             return {
                 productos: [],
@@ -59,23 +78,23 @@
                     <table class="table table-bordered table-hover" id="tabla-productos">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>PRODUCTO</th>
-                                <th>CANTIDAD</th>
-                                <th>PRECIO</th>
-                                <th>ACCIONES</th>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">PRODUCTO</th>
+                                <th class="text-center">CANTIDAD</th>
+                                <th class="text-center">PRECIO</th>
+                                <th class="text-center">ACCIONES</th>
                             </tr>
                         </thead>
                         <tbody x-data='obtenerProductos()'>
                             <template x-for='(producto,index) in productos.datos' :key='index'>
                                 <tr>
-                                    <td x-text="producto.id_productos"></td>
-                                    <td x-text="producto.nombre_pro"></td>
-                                    <td x-text="producto.cantidad"></td>
-                                    <td x-text="producto.precio"></td>
-                                    <td>
-                                        <button @click="editarProducto(producto.id_productos)">Editar</button>
-                                        <button @click="eliminarProducto(producto.id_productos)">Eliminar</button>
+                                    <td class="text-center" x-text="producto.id_productos"></td>
+                                    <td class="text-center" x-text="producto.nombre_pro"></td>
+                                    <td class="text-center" x-text="producto.cantidad"></td>
+                                    <td class="text-center" x-text="producto.precio"></td>
+                                    <td class="text-center">
+                                        <button class="btn btn-info" @click="editarProducto(producto.id_productos)">Editar</button>
+                                        <button class="btn btn-danger" @click="eliminarProducto(producto.id_productos)">Eliminar</button>
                                     </td>
                                 </tr>
                             </template>
@@ -94,23 +113,28 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="id_productos">
-                <div class="form-control">
-                    <label for="nombre_pro">Producto</label>
-                    <input type="text" id="nombre_pro" placeholder="nombre del producto" class="form-control">
-                </div>
-                <div class="form-control">
-                    <label for="cantidad">Cantidad</label>
-                    <input type="number" id="cantidad" placeholder="cantidad del producto" class="form-control">
-                </div>
-                <div class="form-control">
-                    <label for="precio">Precio</label>
-                    <input type="number" id="precio" placeholder="precio del producto" class="form-control" step=".01">
+                <div x-data="{ nombre_pro: '', cantidad: '', precio: '' }">
+                    <form @submit.prevent="guardarProducto">
+                        <div class="form-group mt-2">
+                            <label for="nombre_pro">Nombre del producto:</label>
+                            <input type="text" class="form-control" id="nombre_pro" x-model="nombre_pro">
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="cantidad">Cantidad:</label>
+                            <input class="form-control" type="number" id="cantidad" x-model="cantidad">
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="precio">Precio:</label>
+                            <input class="form-control" type="number" id="precio" x-model="precio">
+                        </div>
+                        <div class="form-group mt-2">
+                            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Registrar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-success" data-bs-dismiss="modal">Registrar</button>
             </div>
           </div>
         </div>

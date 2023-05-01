@@ -27,9 +27,9 @@ class ProductoController extends Controller
 
     public function agregarProducto(Request $request){
         $validator = Validator::make($request->all(), [
-            'nombre_pro' => 'required|string',
+            'nombre_pro' => 'required|string|unique:productos,nombre_pro',
             'cantidad' => 'required|integer|min:1',
-            'precio' => 'required|numeric'
+            'precio' => 'required|numeric|regex:/^[\d]{0,11}(\.[\d]{1,2})?$/'
         ]);
 
         if ($validator->fails()) {
